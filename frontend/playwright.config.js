@@ -5,6 +5,6 @@ export default defineConfig({
 
   use: {
     baseURL: "http://localhost:5173",
-    headless: false,
+    headless: true,
   },
 });
