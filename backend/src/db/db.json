@@ -1,0 +1,22 @@
+{
+  "notes": [
+    {
+      "id": 1778177106018,
+      "title": "Learn Playwright",
+      "content": "important",
+      "createdAt": "2026-05-07T18:05:06.018Z"
+    },
+    {
+      "id": 1778177200415,
+      "title": "StarWars",
+      "content": "important",
+      "createdAt": "2026-05-07T18:06:40.415Z"
+    },
+    {
+      "id": 1778177255268,
+      "title": "Sandakin",
+      "content": "important",
+      "createdAt": "2026-05-07T18:07:35.268Z"
+    }
+  ]
+}
