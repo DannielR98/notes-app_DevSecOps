@@ -1,0 +1,73 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Backend
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: backend
+
+      # Frontend
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: frontend
+
+      # Install Playwright browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        working-directory: frontend
+
+      # Start backend
+      - name: Start backend
+        run: npm run dev &
+        working-directory: backend
+
+      # Build frontend
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+
+      # Start frontend
+      - name: Start frontend
+        run: npm run dev &
+        working-directory: frontend
+
+      # Wait for frontend
+      - name: Wait for frontend
+        run: npx wait-on http://localhost:5173
+        working-directory: frontend
+
+      # Run Playwright tests
+      - name: Run Playwright tests
+        run: npx playwright test
+        working-directory: frontend
+
+      # Run ESLint
+      - name: Run lint
+        run: npm run lint
+        working-directory: frontend
+
+      # Security audit
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+        working-directory: frontend
