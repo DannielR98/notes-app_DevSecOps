@@ -31,6 +31,12 @@ export async function createNote(req, res) {
     return res.status(400).json({
       message: "Title is required",
     });
+
+    if (content && content.trim() === "") {
+      return res.status(400).json({
+        message: "Content cannot be empty",
+      });
+    }
   }
 
   const newNote = await addNote({
