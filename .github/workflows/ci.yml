@@ -68,6 +68,10 @@ jobs:
         working-directory: frontend
 
       # Security audit
-      - name: Run npm audit
+      - name: Run npm audit (frontend)
         run: npm audit --audit-level=high
         working-directory: frontend
+
+      - name: Run npm audit (backend)
+        run: npm audit --audit-level=high
+        working-directory: backend
