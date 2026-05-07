@@ -27,8 +27,12 @@ function App() {
   }
 
   useEffect(() => {
-    loadNotes();
-  }, []);
+  async function fetchData() {
+    await loadNotes();
+  }
+
+  fetchData();
+}, []);
 
   async function handleCreateNote(note) {
     try {
