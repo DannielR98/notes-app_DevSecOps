@@ -72,6 +72,6 @@ test("user can edit note", async ({
     .click();
 
   await expect(
-    page.getByText("(updated)")
+    page.getByRole("heading", { name: "Edit Note" })
   ).toBeVisible();
 });
