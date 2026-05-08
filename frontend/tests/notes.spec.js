@@ -75,3 +75,50 @@ test("user can edit note", async ({
     page.getByRole("heading", { name: "Edit Note" })
   ).toBeVisible();
 });
+
+test("shows validation error on edit", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await page
+    .getByText("Edit")
+    .first()
+    .click();
+
+  await page
+    .locator('.modal-content')
+    .getByPlaceholder("Title")
+    .fill(" ");
+
+  await page
+    .getByRole("button", {
+      name: "Save Changes",
+    })
+    .click();
+
+  await expect(
+    page.getByText("Title is required")
+  ).toBeVisible();
+});
+
+test("user can cancel edit", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await page
+    .getByText("Edit")
+    .first()
+    .click();
+
+  await page
+    .getByRole("button", {
+      name: "Cancel",
+    })
+    .click();
+
+  await expect(
+    page.getByRole("heading", { name: "Edit Note" })
+  ).not.toBeVisible();
+});
