@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function NoteForm({ onCreate }) {
+function NoteForm({ onCreate, onEdit, onCancel, initialNote }) {
   const [title, setTitle] = useState("");
   const [content, setContent] =
     useState("");
 
   const [error, setError] = useState("");
+  const isEditMode = !!initialNote;
+
+  useEffect(() => {
+    if (initialNote) {
+      setTitle(initialNote.title);
+      setContent(initialNote.content || "");
+    }
+  }, [initialNote]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -18,13 +26,19 @@ function NoteForm({ onCreate }) {
 
     setError("");
 
-    await onCreate({
-      title,
-      content,
-    });
-
-    setTitle("");
-    setContent("");
+    if (isEditMode) {
+      await onEdit({
+        title,
+        content,
+      });
+    } else {
+      await onCreate({
+        title,
+        content,
+      });
+      setTitle("");
+      setContent("");
+    }
   }
 
   return (
@@ -45,9 +59,19 @@ function NoteForm({ onCreate }) {
         }
       />
 
-      <button type="submit">
-        Add Note
-      </button>
+      <div className="form-buttons">
+        <button type="submit">
+          {isEditMode ? "Save Changes" : "Add Note"}
+        </button>
+        {isEditMode && (
+          <button
+            type="button"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+        )}
+      </div>
 
       {error && (
         <p className="error">{error}</p>

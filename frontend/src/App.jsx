@@ -15,6 +15,7 @@ import NoteList from "./components/NoteList";
 function App() {
   const [notes, setNotes] = useState([]);
   const [error, setError] = useState("");
+  const [editingNote, setEditingNote] = useState(null);
 
   async function loadNotes() {
     try {
@@ -58,22 +59,31 @@ function App() {
     );
   }
 
-  async function handleToggleEdit(note) {
-    const updated = {
-      ...note,
-      title: note.title + " (updated)",
-    };
+  function handleEdit(note) {
+    setEditingNote(note);
+  }
 
-    const saved = await updateNote(
-      note.id,
-      updated
-    );
+  async function handleSaveEdit(updatedFields) {
+    try {
+      const saved = await updateNote(
+        editingNote.id,
+        updatedFields
+      );
 
-    setNotes((prev) =>
-      prev.map((n) =>
-        n.id === note.id ? saved : n
-      )
-    );
+      setNotes((prev) =>
+        prev.map((n) =>
+          n.id === editingNote.id ? saved : n
+        )
+      );
+
+      setEditingNote(null);
+    } catch {
+      setError("Failed to save note");
+    }
+  }
+
+  function handleCancelEdit() {
+    setEditingNote(null);
   }
 
   return (
@@ -89,8 +99,21 @@ function App() {
       <NoteList
         notes={notes}
         onDelete={handleDelete}
-        onEdit={handleToggleEdit}
+        onEdit={handleEdit}
       />
+
+      {editingNote && (
+        <div className="modal-overlay" onClick={handleCancelEdit}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Edit Note</h2>
+            <NoteForm
+              initialNote={editingNote}
+              onEdit={handleSaveEdit}
+              onCancel={handleCancelEdit}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
