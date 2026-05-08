@@ -1,19 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function NoteForm({ onCreate, onEdit, onCancel, initialNote }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] =
-    useState("");
-
+  // 1. Initialize state directly from props
+  const [title, setTitle] = useState(initialNote?.title || "");
+  const [content, setContent] = useState(initialNote?.content || "");
   const [error, setError] = useState("");
-  const isEditMode = !!initialNote;
 
-  useEffect(() => {
-    if (initialNote) {
-      setTitle(initialNote.title);
-      setContent(initialNote.content || "");
-    }
-  }, [initialNote]);
+  const isEditMode = !!initialNote;
 
   async function handleSubmit(e) {
     e.preventDefault();
