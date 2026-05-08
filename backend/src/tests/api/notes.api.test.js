@@ -1,6 +1,7 @@
+import request from 'supertest';
 import { jest } from '@jest/globals';
 
-// 1. Use the full filename including .js extension
+// Mocka databasen innan vi importerar appen
 jest.unstable_mockModule('../../db/db.js', () => ({
   default: {
     read: jest.fn(),
@@ -9,52 +10,114 @@ jest.unstable_mockModule('../../db/db.js', () => ({
   }
 }));
 
-// 2. Use dynamic imports AFTER the mock is defined
-  const { findAllNotes, findNoteById, addNote, editNote, removeNote }
-  = await import('../../services/notes.service.js');
-  const { default: mockDb } = await import('../../db/db.js');
+const { default: mockDb } = await import('../../db/db.js');
+const { default: app } = await import('../../server.js');
 
-describe('Notes Service', () => {
+describe('Notes API', () => {
   beforeEach(() => {
-    // Reset mock state
     mockDb.data.notes = [];
     jest.clearAllMocks();
   });
 
-  it('should return all notes', async () => {
-    mockDb.data.notes = [{ id: 1, title: 'Test' }];
-    const result = await findAllNotes();
-    expect(result).toHaveLength(1);
-    expect(mockDb.read).toHaveBeenCalled();
+  // TEST 1: GET alla notes
+  it('GET /notes returns all notes', async () => {
+    mockDb.data.notes = [
+      { id: 1, title: 'Note 1', content: 'Content 1' },
+      { id: 2, title: 'Note 2', content: 'Content 2' }
+    ];
+
+    const response = await request(app).get('/notes');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(2);
   });
 
-  it('should return a note by its ID', async () => {
-    mockDb.data.notes = [{ id: 1, title: 'Test Note' }];
-    const result = await findNoteById(1);
-    expect(result).toEqual({ id: 1, title: 'Test Note' });
+  // TEST 2: GET en specifik note
+  it('GET /notes/:id returns a single note', async () => {
+    mockDb.data.notes = [
+      { id: 1, title: 'Note 1', content: 'Content 1' }
+    ];
+
+    const response = await request(app).get('/notes/1');
+
+    expect(response.status).toBe(200);
+    expect(response.body.title).toBe('Note 1');
   });
 
-  it('should return undefined for non-existent ID', async () => {
-    mockDb.data.notes = [{ id: 1, title: 'Test Note' }];
-    const result = await findNoteById(999);
-    expect(result).toBeUndefined();
+  // TEST 3: GET note med ogiltigt ID (404)
+  it('GET /notes/:id returns 404 for non-existent note', async () => {
+    mockDb.data.notes = [
+      { id: 1, title: 'Note 1', content: 'Content 1' }
+    ];
+
+    const response = await request(app).get('/notes/999');
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('Note not found');
   });
 
-  it('should create a new note', async () => {
-    const newNote = { title: 'New Note', content: 'Content here' };
-    const result = await addNote(newNote);
-    expect(result.title).toBe('New Note');
-    expect(result.content).toBe('Content here');
-    expect(mockDb.write).toHaveBeenCalled();
+  // TEST 4: POST skapa ny note (lyckat)
+  it('POST /notes creates a new note', async () => {
+    const newNote = { title: 'New Note', content: 'New Content' };
+
+    const response = await request(app)
+      .post('/notes')
+      .send(newNote);
+
+    expect(response.status).toBe(201);
+    expect(response.body.title).toBe('New Note');
+    expect(response.body.content).toBe('New Content');
   });
 
-  it('should delete a note and return true', async () => {
-  mockDb.data.notes = [{ id: 1, title: 'To Delete' }];
-  const result = await removeNote(1);
-  expect(result).toBe(true);
-  expect(mockDb.data.notes).toHaveLength(0);
-  expect(mockDb.write).toHaveBeenCalled();
-});
+  // TEST 5: POST med tom title (validering/400)
+  it('POST /notes returns 400 for empty title', async () => {
+    const invalidNote = { title: '', content: 'Content' };
 
+    const response = await request(app)
+      .post('/notes')
+      .send(invalidNote);
 
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe('Title is required');
+  });
+
+  // TEST 6: PUT uppdatera note
+  it('PUT /notes/:id updates an existing note', async () => {
+    mockDb.data.notes = [
+      { id: 1, title: 'Old Title', content: 'Old Content' }
+    ];
+
+    const updatedNote = { title: 'Updated Title', content: 'Updated Content' };
+
+    const response = await request(app)
+      .put('/notes/1')
+      .send(updatedNote);
+
+    expect(response.status).toBe(200);
+    expect(response.body.title).toBe('Updated Title');
+  });
+
+  // TEST 7: DELETE radera note
+  it('DELETE /notes/:id deletes a note', async () => {
+    mockDb.data.notes = [
+      { id: 1, title: 'To Delete', content: 'Content' }
+    ];
+
+    const response = await request(app).delete('/notes/1');
+
+    expect(response.status).toBe(204);
+    expect(mockDb.data.notes).toHaveLength(0);
+  });
+
+  // TEST 8: DELETE med ogiltigt ID (404)
+  it('DELETE /notes/:id returns 404 for non-existent note', async () => {
+    mockDb.data.notes = [
+      { id: 1, title: 'Note 1', content: 'Content 1' }
+    ];
+
+    const response = await request(app).delete('/notes/999');
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('Note not found');
+  });
 });
