@@ -4,10 +4,6 @@ En enkel anteckningsapplikation byggd med React (frontend) och Node.js/Express (
 
 ## Komma igång
 
-### Förutsättningar
-- Node.js (v18 eller senare)
-- npm
-
 ### Installation och start
 
 1. Klona projektet:
@@ -52,30 +48,33 @@ POST /notes - Skapa anteckning
 
 // Request Body
 {
-  "title": "Min anteckning",
-  "content": "Innehållet..."
+  "title": "antecking123",
+  "content": "star wars123..."
 }
 
 // Response 201
 {
   "id": "abc123",
-  "title": "Min anteckning",
-  "content": "Innehållet...",
-  "createdAt": "2025-05-08T12:00:00.000Z"
+  "title": "Star wars",
+  "content": "Darth maul...",
+  "createdAt": "2029-07-08T12:00:00.000Z"
 }
 
 // Response 400 (tom titel)
 {
   "message": "Title is required"
 }
+
+
 PUT /notes/:id - Uppdatera anteckning
 
 
 // Request Body
 {
-  "title": "Uppdaterad titel",
-  "content": "Uppdaterat innehåll"
+  "title": "Ny star wars",
+  "content": "Clone wars version of darth maul"
 }
+
 Notes Modell
 Fält	Typ	Beskrivning
 id	string	Unikt identifierare
@@ -84,29 +83,15 @@ content	string	Anteckningens innehåll
 createdAt	string	Skapandetidpunkt (ISO 8601)
 Projektstruktur
 
-notes-app-main/
-├── backend/
-│   ├── src/
-│   │   ├── controllers/   # Request/response-logik
-│   │   ├── services/      # Affärslogik
-│   │   ├── routes/        # API-rutter
-│   │   ├── db/            # Databashantering
-│   │   └── tests/         # Backend-tester
-│   └── db.json            # JSON-databas
-└── frontend/
-    ├── src/
-    │   ├── components/    # React-komponenter
-    │   └── services/      # API-klient
-    └── tests/             # Playwright-tester
-Tester
-Backend:
 
+
+Backend:
 
 cd backend
 npm test
+
+
 Frontend:
-
-
 cd frontend
 npx playwright test
 
@@ -115,9 +100,9 @@ npx playwright test
 
 Projektet använder GitHub Actions för kontinuerlig integration. Vid varje push eller pull request till `main`:
 
-- Backend- och frontend-beroenden installeras
-- Playwright-tester körs
-- ESLint-kodgranskning körs
+- vi installerar back/frontend-beroenden
+- Playwright-tester
+- ESLint-kodgranskning
 - npm audit körs för säkerhetskontroll
 
 ```
