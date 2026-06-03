@@ -97,9 +97,39 @@ Vi använder använder GitHub Actions för kontinuerlig integration. Vid varje p
 - npm audit körs för säkerhetskontroll
 
 
+## Testa endpoints med curl
 
+### 1. Hämta alla anteckningar
+```bash
+curl -X GET http://localhost:3001/notes
+```
 
-Note to self att fixa guthub pipeline, allt ska inte köras under test, ha dependency scanning
-frontend test
-backend test
-deploy
+### 2. Hämta specifik anteckning
+```bash
+curl -X GET http://localhost:3001/notes/{id}
+```
+
+### 3. Skapa ny anteckning
+```bash
+curl -X POST http://localhost:3001/notes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Min anteckning",
+    "content": "Innehål här"
+  }'
+```
+
+### 4. Uppdatera anteckning
+```bash
+curl -X PUT http://localhost:3001/notes/{id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Uppdaterad titel",
+    "content": "Uppdaterat innehål"
+  }'
+```
+
+### 5. Ta bort anteckning
+```bash
+curl -X DELETE http://localhost:3001/notes/{id}
+```
