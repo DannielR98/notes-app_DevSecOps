@@ -57,63 +57,39 @@ Alla endpoints prefixas med /notes
 |DELETE|/notes/:id	| Ta bort anteckning	|204 No Content, 404 Not Found|
 
 
-Request/Response Format
-POST /notes - Skapa anteckning
+### Request/Response Detaljer
 
-
-// Request Body
-{
-  "title": "antecking123",
-  "content": "star wars123..."
-}
-
-// Response 201
-{
-  "id": "abc123",
-  "title": "Star wars",
-  "content": "Darth maul...",
-  "createdAt": "2029-07-08T12:00:00.000Z"
-}
-
-// Response 400 (tom titel)
-{
-  "message": "Title is required"
-}
-
-
-PUT /notes/:id - Uppdatera anteckning
-
-
-// Request Body
-{
-  "title": "Ny star wars",
-  "content": "Clone wars version of darth maul"
-}
-
-Notes Modell
-Fält	Typ	Beskrivning
-id	string	Unikt identifierare
-title	string	Anteckningens titel (krävs)
-content	string	Anteckningens innehåll
-createdAt	string	Skapandetidpunkt (ISO 8601)
-Projektstruktur
+| Endpoint & Metod | Typ | Status / Scenario | Format (JSON) |
+| :--- | :--- | :--- | :--- |
+| **POST** `/notes` <br>*(Skapa anteckning)* | **Request** | Body | `{ "title": "antecking123", "content": "star wars123..." }` |
+| | **Response** | `201 Created` | `{ "id": "abc123", "title": "Star wars", "content": "Darth maul...", "createdAt": "2029-07-08T12:00:00.000Z" }` |
+| | **Response** | `400 Bad Request` <br>*(Tom titel)* | `{ "message": "Title is required" }` |
+| **PUT** `/notes/:id` <br>*(Uppdatera anteckning)* | **Request** | Body | `{ "title": "Ny star wars", "content": "Clone wars version of darth maul" }` |
 
 
 
+
+
+
+### Testa koden:
 Backend:
-
+```bash
 cd backend
 npm test
+```
+
 
 
 Frontend:
+```bash
 cd frontend
 npx playwright test
+```
 
 
 ## CI/CD
 
-Projektet använder GitHub Actions för kontinuerlig integration. Vid varje push eller pull request till `main`:
+Vi använder använder GitHub Actions för kontinuerlig integration. Vid varje push eller pull request till `main`:
 
 - vi installerar back/frontend-beroenden
 - Playwright-tester
