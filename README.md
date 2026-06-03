@@ -1,6 +1,6 @@
 # Notes App
 
-En enkel anteckningsapplikation byggd med React (frontend) och Node.js/Express (backend).
+En anteckningsapp byggd med React (frontend) och Node.js/Express (backend).
 
 ## Komma igång
 
