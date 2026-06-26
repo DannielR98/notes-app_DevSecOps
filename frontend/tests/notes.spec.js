@@ -4,7 +4,7 @@ test("user can create a note", async ({
   page,
 }) => {
   const uniqueTitle =
-    "Playwright-" + Date.now();  // Ensure unique title for test  (coolt att t.om kommentarer auto-genereras nu)
+    "Playwright-" + Date.now();  
 
   await page.goto("/");
 

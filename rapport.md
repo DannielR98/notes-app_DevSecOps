@@ -111,7 +111,7 @@ I frontend täcker vi inte felhantering och edge cases, t.ex felhantering vid ap
 - Pull requests till main
 
 
-- Alla jobb körs sekventiellt
+- Alla jobb körs sekventiellt (förutom e2e och security audig som körs parallelt)
 - Vid fel avbryts hela workflow
 
 
