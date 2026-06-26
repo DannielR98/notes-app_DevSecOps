@@ -105,34 +105,28 @@ I frontend täcker vi inte felhantering och edge cases, t.ex felhantering vid ap
 12. npm audit (frontend + backend)
 ```
 
-### Gates och logik
+### När den triggas:
 
 - Push till main branch
 - Pull requests till main
 
 
-- Alla steg körs sekventiellt
+- Alla jobb körs sekventiellt
 - Vid fel avbryts hela workflow
 
-### Svårigheter och luckor
-
-**1. Backend-tester körs ej i CI:**
-- Jest-testerna (service + API) körs inte
-- Endast Playwright E2E körs
 
 
-
-**3. Saknar:**
+**Saknar:**
 - Code coverage rapport
 - Deploy-step
 
+Skulle vilja implementera så att bara ägaren av anteckningen kan ändra på den (kanske inloggning som krävs då eller nån jwt token?)
+Och så att man kan se historiken
 
 ---
 
 ## 5. Reflektion
 
-### Projektet
-Ett välstrukturerat projekt med tydlig separation mellan frontend/backend. Arkitekturen följer best practices med routes/controllers/services.
 
 ### Vad jag lärt mig
 - Playwright för E2E-testning (visste inte ens att detta existerade förut, att man kan simulera knapptryckningar)
